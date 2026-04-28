@@ -24,18 +24,13 @@ public class UrlServiceImpl implements UrlService {
     @Override
     public UrlResponse shorten(UrlRequest request) {
 
-        String alias = request.customAlias() != null
-                ? request.customAlias() : UrlUtils.generateAlias();
+        var alias = getAlias(request);
 
         if (urlRepository.existsByAlias(alias)) {
             throw new BadRequestException("Invalid input or alias already taken");
         }
 
-        Url url = Url
-                .builder()
-                .fullUrl(request.fullUrl())
-                .alias(alias)
-                .build();
+        var url = getUrl(request, alias);
 
         urlRepository.save(url);
 
@@ -63,9 +58,22 @@ public class UrlServiceImpl implements UrlService {
 
     public void delete(String alias) {
 
-        Url url = urlRepository.findByAlias(alias)
+        var url = urlRepository.findByAlias(alias)
                 .orElseThrow(() -> new NotFoundException("Alias not found"));
         log.info("Deleting shorten url for alias '{}' from the DB", url.getAlias());
         urlRepository.delete(url);
+    }
+
+    private Url getUrl(UrlRequest request, String alias) {
+        return Url
+                .builder()
+                .fullUrl(request.fullUrl())
+                .alias(alias)
+                .build();
+    }
+
+    private String getAlias(UrlRequest request) {
+        return request.customAlias() != null
+                ? request.customAlias() : UrlUtils.generateAlias();
     }
 }
