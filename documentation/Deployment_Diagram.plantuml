@@ -1,0 +1,13 @@
+@startuml
+node "Docker Compose" {
+  [React Container] as UI
+  [Spring Boot Container] as API
+  database "Postgres Container" as DB
+
+  UI -down-> API : REST Calls (Port 8080)
+  API -down-> DB : JDBC (Port 5432)
+}
+
+actor User
+User -right-> UI : Port 3000
+@enduml
