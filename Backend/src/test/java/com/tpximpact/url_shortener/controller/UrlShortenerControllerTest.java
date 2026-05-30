@@ -1,6 +1,6 @@
 package com.tpximpact.url_shortener.controller;
 
-import com.tpximpact.url_shortener.common.dto.UrlDto;
+import com.tpximpact.url_shortener.model.dto.UrlDto;
 import com.tpximpact.url_shortener.model.ShortenUrlRequest;
 import com.tpximpact.url_shortener.service.ShortenUrlService;
 import org.junit.jupiter.api.Test;

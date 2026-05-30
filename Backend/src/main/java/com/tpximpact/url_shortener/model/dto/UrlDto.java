@@ -1,7 +1,6 @@
-package com.tpximpact.url_shortener.common.dto;
+package com.tpximpact.url_shortener.model.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
