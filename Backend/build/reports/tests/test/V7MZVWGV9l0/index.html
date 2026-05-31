@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="x-ua-compatible" content="IE=edge"/>
-<title>Test results - com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest</title>
+<title>Test results - com.tpximpact.url_shortener.controller.UrlShortenerControllerTest</title>
 <link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
 <link href="../css/style.css" rel="stylesheet" type="text/css"/>
 <script src="../js/report.js" type="text/javascript"></script>
@@ -12,7 +12,7 @@
 <div id="content">
 <div class="breadcrumbs">
 <a class="breadcrumb" href="../index.html">all</a> &gt; 
-<span class="breadcrumb">com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest</span>
+<span class="breadcrumb">com.tpximpact.url_shortener.controller.UrlShortenerControllerTest</span>
 </div>
 <div class="tab-container">
 <ul class="tabLinks">
@@ -22,7 +22,7 @@
 </ul>
 <div class="tab">
 <h2>Gradle Test Run :test</h2>
-<h1>ShortenUrlServiceImplTest</h1>
+<h1>UrlShortenerControllerTest</h1>
 <div class="tab-container">
 <ul class="tabLinks">
 <li>
@@ -41,7 +41,7 @@
 <tr>
 <td>
 <div class="infoBox">
-<div class="counter">9</div>
+<div class="counter">6</div>
 <p>tests</p>
 </div>
 </td>
@@ -59,7 +59,7 @@
 </td>
 <td>
 <div class="infoBox duration">
-<div class="counter">0.199s</div>
+<div class="counter">0.627s</div>
 <p>duration</p>
 </div>
 </td>
@@ -89,17 +89,8 @@
 </tr>
 </thead>
 <tr>
-<td class="success">deleteAliasShouldCallPersistenceLayer()</td>
-<td class="path" hidden="">deleteAliasShouldCallPersistenceLayer()</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>0.158s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">deleteAliasShouldThrowNotFoundExceptionIfAliasDoesNotExist()</td>
-<td class="path" hidden="">deleteAliasShouldThrowNotFoundExceptionIfAliasDoesNotExist()</td>
+<td class="success">deleteAliasEndpointShouldCallServiceLayer()</td>
+<td class="path" hidden="">deleteAliasEndpointShouldCallServiceLayer()</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
@@ -107,17 +98,35 @@
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">findUrlByAliasShouldASingleShortenedUrl()</td>
-<td class="path" hidden="">findUrlByAliasShouldASingleShortenedUrl()</td>
+<td class="success">redirectShouldFetchAliasDetailsFromServiceLayer()</td>
+<td class="path" hidden="">redirectShouldFetchAliasDetailsFromServiceLayer()</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0.006s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">findUrlByAliasShouldThrowExceptionWhenAliasDoesNotExist()</td>
-<td class="path" hidden="">findUrlByAliasShouldThrowExceptionWhenAliasDoesNotExist()</td>
+<td class="success">redirectShouldThrowInternalServerErrorIfItCannotGetFullRedirectLink()</td>
+<td class="path" hidden="">redirectShouldThrowInternalServerErrorIfItCannotGetFullRedirectLink()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0.006s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">urlFetchUrlsShouldCallServiceLayer()</td>
+<td class="path" hidden="">urlFetchUrlsShouldCallServiceLayer()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0.009s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">urlShortenerShouldReturnBadRequestWhenNoUrlInBody()</td>
+<td class="path" hidden="">urlShortenerShouldReturnBadRequestWhenNoUrlInBody()</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
@@ -125,48 +134,12 @@
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">getAllUrlsShouldReturnAListOfDtosWhichAreFormattedFromPersistenceLayer()</td>
-<td class="path" hidden="">getAllUrlsShouldReturnAListOfDtosWhichAreFormattedFromPersistenceLayer()</td>
+<td class="success">urlShortenerShouldReturnNewUrlWhenSuccessfulRequest()</td>
+<td class="path" hidden="">urlShortenerShouldReturnNewUrlWhenSuccessfulRequest()</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0.005s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">shortenUrlServiceShouldReturnAliasIfProvided()</td>
-<td class="path" hidden="">shortenUrlServiceShouldReturnAliasIfProvided()</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>0.004s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">shortenUrlServiceShouldReturnRandomizedUrl()</td>
-<td class="path" hidden="">shortenUrlServiceShouldReturnRandomizedUrl()</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>0.005s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">shortenUrlServiceShouldSaveAliasToPersistenceLayerWhenValid()</td>
-<td class="path" hidden="">shortenUrlServiceShouldSaveAliasToPersistenceLayerWhenValid()</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>0.005s</td>
-<td class="success">100%</td>
-</tr>
-<tr>
-<td class="success">shortenUrlServiceShouldThrowExceptionIfUrlAliasIsAlreadyInUse()</td>
-<td class="path" hidden="">shortenUrlServiceShouldThrowExceptionIfUrlAliasIsAlreadyInUse()</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>0.004s</td>
+<td>0.591s</td>
 <td class="success">100%</td>
 </tr>
 </table>

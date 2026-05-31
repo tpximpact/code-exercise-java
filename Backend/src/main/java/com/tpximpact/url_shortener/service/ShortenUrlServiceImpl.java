@@ -35,7 +35,7 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
         }
 
         if(urlShortenerRepository.existsById(req.getCustomAlias())){
-            throw new DuplicateAliasException(String.format("Alias of '%s' already exists. Please use an alias which is not in use.", req.getCustomAlias()));
+            throw new DuplicateAliasException(String.format("Invalid input or alias already taken: %s", req.getCustomAlias()));
         }
 
         String host = env.getProperty("url.host");
@@ -68,6 +68,8 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
                     .fullUrl(alias.getDestination())
                     .shortUrl(String.format("%s:%s/%s", host, port, alias.getName()))
                     .build();
+
+            resultList.add(dto);
         }
 
         return resultList;
@@ -78,7 +80,7 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
         Optional<Alias> aliasResult = urlShortenerRepository.findById(aliasName);
 
         if(aliasResult.isEmpty()){
-            throw new AliasDoesNotExistException(String.format("Alias of name '%s' does not exist", aliasName));
+            throw new AliasDoesNotExistException(String.format("Alias not found: %s", aliasName));
         }
 
         return aliasResult.get();

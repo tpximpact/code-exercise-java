@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-05-31T16:18:31.506Z" hostname="archlinux" time="0.627">
+  <properties/>
+  <testcase name="urlShortenerShouldReturnNewUrlWhenSuccessfulRequest()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.591"/>
+  <testcase name="urlShortenerShouldReturnBadRequestWhenNoUrlInBody()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.005"/>
+  <testcase name="redirectShouldThrowInternalServerErrorIfItCannotGetFullRedirectLink()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.006"/>
+  <testcase name="urlFetchUrlsShouldCallServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.009"/>
+  <testcase name="redirectShouldFetchAliasDetailsFromServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.006"/>
+  <testcase name="deleteAliasEndpointShouldCallServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
