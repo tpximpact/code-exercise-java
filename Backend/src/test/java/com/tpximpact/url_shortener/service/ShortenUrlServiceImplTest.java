@@ -1,7 +1,9 @@
 package com.tpximpact.url_shortener.service;
 
+import com.tpximpact.url_shortener.exception.AliasDoesNotExistException;
 import com.tpximpact.url_shortener.exception.DuplicateAliasException;
 import com.tpximpact.url_shortener.model.Alias;
+import com.tpximpact.url_shortener.model.dto.ShortenedUrlDto;
 import com.tpximpact.url_shortener.model.dto.UrlDto;
 import com.tpximpact.url_shortener.model.ShortenUrlRequest;
 import com.tpximpact.url_shortener.repository.UrlShortenerRepository;
@@ -11,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,8 +67,6 @@ class ShortenUrlServiceImplTest {
 
     @Test
     void shortenUrlServiceShouldThrowExceptionIfUrlAliasIsAlreadyInUse(){
-        when(env.getProperty("url.host")).thenReturn(HOST);
-        when(env.getProperty("url.port")).thenReturn(PORT);
         String url = "https://google.com";
         String alias = "testalias";
         ShortenUrlRequest request = new ShortenUrlRequest();
@@ -87,5 +90,71 @@ class ShortenUrlServiceImplTest {
         shortenUrlService.shortenUrl(request);
 
         verify(urlShortenerRepository).save(any(Alias.class));
+    }
+
+    @Test
+    void getAllUrlsShouldReturnAListOfDtosWhichAreFormattedFromPersistenceLayer(){
+        when(env.getProperty("url.host")).thenReturn(HOST);
+        when(env.getProperty("url.port")).thenReturn(PORT);
+        String destination1 = "https://google.com";
+        String name1 = "google";
+        Alias alias1 = Alias.builder().name(name1).destination(destination1).build();
+        String destination2 = "https://amazon.com";
+        String name2 = "amazon";
+        Alias alias2 = Alias.builder().name(name2).destination(destination2).build();
+        List<Alias> aliasList = List.of(alias1, alias2);
+
+        when(urlShortenerRepository.findAll()).thenReturn(aliasList);
+
+        List<ShortenedUrlDto> resultList = shortenUrlService.getAllUrls();
+
+        for(ShortenedUrlDto result : resultList){
+            assertTrue(result.getAlias().equals(name1) || result.getAlias().equals(name2));
+            assertTrue(result.getFullUrl().equals(destination1) || result.getFullUrl().equals(destination2));
+            String shortUrl1 = String.format(String.format("%s:%s/%s", HOST, PORT, alias1.getName()));
+            String shortUrl2 = String.format(String.format("%s:%s/%s", HOST, PORT, alias2.getName()));
+            assertTrue(result.getShortUrl().equals(shortUrl1) || result.getShortUrl().equals(shortUrl2));
+        }
+    }
+
+    @Test
+    void findUrlByAliasShouldASingleShortenedUrl(){
+        String name = "google";
+        String destination = "https://google.com";
+        Alias expectedResult = Alias.builder()
+                .name(name)
+                .destination(destination)
+                .build();
+        when(urlShortenerRepository.findById(name)).thenReturn(Optional.ofNullable(expectedResult));
+
+        Alias actualResult = shortenUrlService.findByAlias(name);
+
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    void findUrlByAliasShouldThrowExceptionWhenAliasDoesNotExist(){
+        String aliasName = "google";
+        when(urlShortenerRepository.findById(aliasName)).thenReturn(Optional.empty());
+
+        assertThrows(AliasDoesNotExistException.class, ()->shortenUrlService.findByAlias(aliasName));
+    }
+
+    @Test
+    void deleteAliasShouldCallPersistenceLayer(){
+        String aliasName = "google";
+        Alias alias = Alias.builder().name(aliasName).build();
+        when(urlShortenerRepository.findById(aliasName)).thenReturn(Optional.ofNullable(alias));
+
+        shortenUrlService.deleteAlias(aliasName);
+        verify(urlShortenerRepository).deleteById(aliasName);
+    }
+
+    @Test
+    void deleteAliasShouldThrowNotFoundExceptionIfAliasDoesNotExist(){
+        String aliasName = "google";
+        when(urlShortenerRepository.findById(aliasName)).thenReturn(Optional.empty());
+
+        assertThrows(AliasDoesNotExistException.class, ()->shortenUrlService.deleteAlias(aliasName));
     }
 }

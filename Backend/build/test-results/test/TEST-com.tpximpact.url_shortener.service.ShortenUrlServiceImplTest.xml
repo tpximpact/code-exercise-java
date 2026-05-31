@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-05-29T19:29:34.397Z" hostname="archlinux" time="1.028">
+<testsuite name="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-05-31T14:18:57.348Z" hostname="archlinux" time="0.995">
   <properties/>
-  <testcase name="shortenUrlServiceShouldThrowExceptionIfUrlAliasIsAlreadyInUse()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="1.016"/>
+  <testcase name="deleteAliasShouldCallPersistenceLayer()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.874"/>
+  <testcase name="findUrlByAliasShouldThrowExceptionWhenAliasDoesNotExist()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.015"/>
+  <testcase name="getAllUrlsShouldReturnAListOfDtosWhichAreFormattedFromPersistenceLayer()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.012"/>
+  <testcase name="deleteAliasShouldThrowNotFoundExceptionIfAliasDoesNotExist()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.014"/>
+  <testcase name="shortenUrlServiceShouldReturnRandomizedUrl()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.017"/>
+  <testcase name="shortenUrlServiceShouldReturnAliasIfProvided()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.01"/>
+  <testcase name="findUrlByAliasShouldASingleShortenedUrl()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.008"/>
+  <testcase name="shortenUrlServiceShouldSaveAliasToPersistenceLayerWhenValid()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.01"/>
+  <testcase name="shortenUrlServiceShouldThrowExceptionIfUrlAliasIsAlreadyInUse()" classname="com.tpximpact.url_shortener.service.ShortenUrlServiceImplTest" time="0.009"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

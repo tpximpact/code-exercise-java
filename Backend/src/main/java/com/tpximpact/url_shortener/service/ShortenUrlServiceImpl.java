@@ -1,16 +1,20 @@
 package com.tpximpact.url_shortener.service;
 
-import com.tpximpact.url_shortener.config.RedirectUrlConfig;
+import com.tpximpact.url_shortener.exception.AliasDoesNotExistException;
 import com.tpximpact.url_shortener.exception.DuplicateAliasException;
 import com.tpximpact.url_shortener.model.Alias;
+import com.tpximpact.url_shortener.model.dto.ShortenedUrlDto;
 import com.tpximpact.url_shortener.model.dto.UrlDto;
 import com.tpximpact.url_shortener.model.ShortenUrlRequest;
 import com.tpximpact.url_shortener.repository.UrlShortenerRepository;
 import com.tpximpact.url_shortener.util.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ShortenUrlServiceImpl implements ShortenUrlService {
@@ -49,5 +53,44 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
         result.setShortUrl(formattedUrl);
 
         return result;
+    }
+
+    @Override
+    public List<ShortenedUrlDto> getAllUrls() {
+        List<Alias> aliasList = urlShortenerRepository.findAll();
+
+        String host = env.getProperty("url.host");
+        String port = env.getProperty("url.port");
+        List<ShortenedUrlDto> resultList = new ArrayList<>();
+        for(Alias alias : aliasList){
+            ShortenedUrlDto dto = ShortenedUrlDto.builder()
+                    .alias(alias.getName())
+                    .fullUrl(alias.getDestination())
+                    .shortUrl(String.format("%s:%s/%s", host, port, alias.getName()))
+                    .build();
+        }
+
+        return resultList;
+    }
+
+    @Override
+    public Alias findByAlias(String aliasName) {
+        Optional<Alias> aliasResult = urlShortenerRepository.findById(aliasName);
+
+        if(aliasResult.isEmpty()){
+            throw new AliasDoesNotExistException(String.format("Alias of name '%s' does not exist", aliasName));
+        }
+
+        return aliasResult.get();
+    }
+
+    @Override
+    public void deleteAlias(String alias) {
+        boolean isEmpty = urlShortenerRepository.findById(alias).isEmpty();
+
+        if(isEmpty){
+            throw new AliasDoesNotExistException("Alias not found");
+        }
+        urlShortenerRepository.deleteById(alias);
     }
 }
