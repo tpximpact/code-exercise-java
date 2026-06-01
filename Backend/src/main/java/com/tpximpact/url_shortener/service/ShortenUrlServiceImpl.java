@@ -3,12 +3,14 @@ package com.tpximpact.url_shortener.service;
 import com.tpximpact.url_shortener.config.RedirectUrlConfig;
 import com.tpximpact.url_shortener.exception.AliasDoesNotExistException;
 import com.tpximpact.url_shortener.exception.DuplicateAliasException;
+import com.tpximpact.url_shortener.exception.UnacceptableUrlException;
 import com.tpximpact.url_shortener.model.Alias;
 import com.tpximpact.url_shortener.model.dto.ShortenedUrlDto;
 import com.tpximpact.url_shortener.model.dto.UrlDto;
 import com.tpximpact.url_shortener.model.ShortenUrlRequest;
 import com.tpximpact.url_shortener.repository.UrlShortenerRepository;
 import com.tpximpact.url_shortener.util.RandomStringGenerator;
+import com.tpximpact.url_shortener.util.ValidatorHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -39,9 +41,14 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
             throw new DuplicateAliasException(String.format("Invalid input or alias already taken: %s", req.getCustomAlias()));
         }
 
+        if(!ValidatorHelper.isValidUrl(req.getFullUrl())){
+            throw new UnacceptableUrlException("Unacceptable Url");
+        }
+
+        String protocol = ValidatorHelper.getUrlProtocol(req.getFullUrl());
         String host = urlConfig.getHost();
         String port = urlConfig.getPort();
-        String formattedUrl = String.format("%s:%s/%s", host, port, req.getCustomAlias());
+        String formattedUrl = String.format("%s://%s:%s/%s", protocol, host, port, req.getCustomAlias());
 
         Alias newAlias = Alias.builder()
                 .name(req.getCustomAlias())

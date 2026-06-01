@@ -1,5 +1,6 @@
 package com.tpximpact.url_shortener.service;
 
+import com.tpximpact.url_shortener.config.RedirectUrlConfig;
 import com.tpximpact.url_shortener.exception.AliasDoesNotExistException;
 import com.tpximpact.url_shortener.exception.DuplicateAliasException;
 import com.tpximpact.url_shortener.model.Alias;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 class ShortenUrlServiceImplTest {
 
     @Mock
-    Environment env;
+    RedirectUrlConfig urlConfig;
 
     @Mock
     UrlShortenerRepository urlShortenerRepository;
@@ -40,7 +41,7 @@ class ShortenUrlServiceImplTest {
 
     @Test
     void shortenUrlServiceShouldReturnRandomizedUrl() {
-        when(env.getProperty("redirect.url.length", Integer.class)).thenReturn(6);
+        when(urlConfig.getLength()).thenReturn(6);
         String url = "https://google.com";
         ShortenUrlRequest request = new ShortenUrlRequest();
         request.setFullUrl(url);
@@ -52,8 +53,8 @@ class ShortenUrlServiceImplTest {
 
     @Test
     void shortenUrlServiceShouldReturnAliasIfProvided() {
-        when(env.getProperty("url.host")).thenReturn(HOST);
-        when(env.getProperty("url.port")).thenReturn(PORT);
+        when(urlConfig.getHost()).thenReturn(HOST);
+        when(urlConfig.getPort()).thenReturn(PORT);
         String url = "https://google.com";
         String alias = "testalias";
         ShortenUrlRequest request = new ShortenUrlRequest();
@@ -62,7 +63,7 @@ class ShortenUrlServiceImplTest {
 
         UrlDto result = shortenUrlService.shortenUrl(request);
 
-        assertEquals(String.format("%s:%s/%s", HOST, PORT, alias), result.getShortUrl());
+        assertEquals(String.format("https://%s:%s/%s", HOST, PORT, alias), result.getShortUrl());
     }
 
     @Test
@@ -79,8 +80,8 @@ class ShortenUrlServiceImplTest {
 
     @Test
     void shortenUrlServiceShouldSaveAliasToPersistenceLayerWhenValid(){
-        when(env.getProperty("url.host")).thenReturn(HOST);
-        when(env.getProperty("url.port")).thenReturn(PORT);
+        when(urlConfig.getHost()).thenReturn(HOST);
+        when(urlConfig.getPort()).thenReturn(PORT);
         String url = "https://google.com";
         String alias = "testalias";
         ShortenUrlRequest request = new ShortenUrlRequest();
@@ -94,8 +95,8 @@ class ShortenUrlServiceImplTest {
 
     @Test
     void getAllUrlsShouldReturnAListOfDtosWhichAreFormattedFromPersistenceLayer(){
-        when(env.getProperty("url.host")).thenReturn(HOST);
-        when(env.getProperty("url.port")).thenReturn(PORT);
+        when(urlConfig.getHost()).thenReturn(HOST);
+        when(urlConfig.getPort()).thenReturn(PORT);
         String destination1 = "https://google.com";
         String name1 = "google";
         Alias alias1 = Alias.builder().name(name1).destination(destination1).build();
