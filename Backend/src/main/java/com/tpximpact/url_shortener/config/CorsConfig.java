@@ -9,20 +9,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.List;
+
 @PropertySource("classpath:application.properties")
 @Configuration
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class RedirectUrlConfig {
-
-    @Value("${redirect.url.length}")
-    private int length;
-
-    @Value("${redirect.url.host}")
-    private String host;
-
-    @Value("${redirect.url.port}")
-    private String port;
+public class CorsConfig {
+    @Value("${cors.allowed-origins}")
+    private List<String> allowedOrigins;
 }

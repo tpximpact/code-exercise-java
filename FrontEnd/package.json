@@ -11,10 +11,12 @@
   "dependencies": {
     "@react-router/node": "7.15.1",
     "@react-router/serve": "7.15.1",
+    "govuk-frontend": "^6.1.0",
     "isbot": "^5.1.36",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router": "7.15.1"
+    "react-router": "7.15.1",
+    "sass": "^1.100.0"
   },
   "devDependencies": {
     "@react-router/dev": "7.15.1",
