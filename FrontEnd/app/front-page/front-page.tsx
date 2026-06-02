@@ -3,32 +3,40 @@ import type TabProperties from "../../components/tabs/TabProperties";
 import Tab from "../../components/tabs/Tab";
 import ShortenUrl from "./shorten-url/ShortenUrl";
 import UrlList from "./url-list/url-list";
+import type { urlEntry } from "./types";
+
 
 export function FrontPage() {
     const API_BASE = "http://localhost:8080";
-
-    const [fullUrl, setFullUrl] = useState("");
-    const [customAlias, setCustomAlias] = useState("");
-    const [urls, setUrls] = useState([]);
-    const [shortUrl, setShortUrl] = useState("");
-    const [error, setError] = useState("");
-    const [selectedTab, setSelectedTab] = useState(0);
-
     const [newUrlLink, setNewUrlLink] = useState("");
+    const [urls, setUrls] = useState<urlEntry[]>([]);
+
 
     const fetchUrls = async () => {
         try {
             const response = await fetch(`${API_BASE}/urls`);
-            const data = await response.json();
+            const data = await response.json() as urlEntry[];
+            console.log(data);
             setUrls(data);
         } catch (err) {
             console.error(err);
         }
     };
 
+    const deleteLink = async (url: urlEntry) => {
+        await fetch(`${API_BASE}/${encodeURIComponent(url.alias)}`, { method: "DELETE" });
+
+        await fetchUrls();
+    };
+
     useEffect(() => {
         fetchUrls();
     }, []);
+
+    useEffect(()=>{
+        fetchUrls();
+    }, [newUrlLink])
+
 
 
     const tabInformation: TabProperties[] = [
@@ -40,7 +48,7 @@ export function FrontPage() {
         {
             id: 'url-list',
             title: 'Url List',
-            content: <UrlList />
+            content: <UrlList deleteLink={deleteLink} urls={urls} />
         }
     ]
 

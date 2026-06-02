@@ -127,12 +127,6 @@ Follow the redirect:
 curl -L http://localhost:8080/my-custom-alias
 ```
 
-Inspect the redirect response:
-
-```bash
-curl -I http://localhost:8080/my-custom-alias
-```
-
 **Response**
 
 ```http
@@ -179,41 +173,11 @@ curl -X DELETE http://localhost:8080/my-custom-alias
 HTTP/1.1 204 No Content
 ```
 
----
+## Improvements
+Given the time constraints with the take home project, some important things were not given the proper due-diligence these include:
 
-### Error Examples
-
-#### Alias already exists
-
-```bash
-curl -X POST http://localhost:8080/shorten \
-  -H "Content-Type: application/json" \
-  -d '{
-    "fullUrl": "https://example.com",
-    "customAlias": "my-custom-alias"
-  }'
-```
-
-**Response**
-
-```http
-HTTP/1.1 400 Bad Request
-```
-
-```json
-{
-  "message": "Alias already taken"
-}
-```
-
-#### Alias not found
-
-```bash
-curl http://localhost:8080/does-not-exist
-```
-
-**Response**
-
-```http
-HTTP/1.1 404 Not Found
-```
+* Proper logging
+* Competent caching (redis distributed caching)
+* Work flow improvements (URL list automatically updating when new url is shortened)
+* More verbose error reporting from backend
+* Better handling of Url Env in docker compose and front end.

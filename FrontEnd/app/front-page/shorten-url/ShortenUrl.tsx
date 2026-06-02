@@ -8,6 +8,7 @@ export default function ShortenUrl(props: componentProps){
     const API_BASE = "http://localhost:8080";
 
     const [aliasError, setAliasError] = useState("");
+    const [urlError, setUrlError] = useState("");
 
     //form fields
     const [url, setUrl] = useState("");
@@ -15,6 +16,7 @@ export default function ShortenUrl(props: componentProps){
 
     const shortenUrl = async () => {
         setAliasError("");
+        setUrlError("");
 
         try {
             const response = await fetch(`${API_BASE}/shorten`, {
@@ -30,8 +32,12 @@ export default function ShortenUrl(props: componentProps){
 
             if (response.status == 400) {
                 const text = await response.text();
-                console.log('ERROR: ', text);
-                setAliasError(text);
+
+                if(text == "Invalid input"){
+                    setUrlError("Please enter a valid url!");
+                } else {
+                    setAliasError("Please enter a unique alias, you can check the Url list to see which ones are currently in use");
+                }
                 throw new Error(text);
             }
 
@@ -41,7 +47,7 @@ export default function ShortenUrl(props: componentProps){
             setUrl("");
             setAlias("");
         } catch (err: any) {
-            console.log(err);
+                console.log('ERROR: ', err);
         }
     };
 
@@ -52,17 +58,22 @@ export default function ShortenUrl(props: componentProps){
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="govuk-form-group">
+            <div className={`govuk-form-group ${urlError && 'govuk-form-group--error'}`}>
                 <h2 className="govuk-label-wrapper">
                     <label className="govuk-label govuk-label--l" htmlFor="shorten-input">
                         Enter the full url that you would like shortened
                     </label>
                 </h2>
+                {urlError && (
+                    <p id="event-name-error" className="govuk-error-message">
+                        <span className="govuk-visually-hidden">Error:</span> {urlError}
+                    </p>
+                )}
                 <div id="shorten-input-hint" className="govuk-hint">
                     Ensure that the URL is valid, once submitted you will be provided with the shortened link
                 </div>
                 <input
-                    className="govuk-input"
+                    className={`govuk-input govuk-input--width-20 ${urlError && 'govuk-input--error'}`}
                     id="shorten-input"
                     name="url"
                     type="url"
