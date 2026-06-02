@@ -35,6 +35,8 @@ class ShortenUrlServiceImplTest {
     @InjectMocks
     private ShortenUrlServiceImpl shortenUrlService;
 
+    private static final String PROTOCOL = "http";
+
     private static final String HOST = "test-host";
 
     private static final String PORT = "8080";
@@ -53,6 +55,7 @@ class ShortenUrlServiceImplTest {
 
     @Test
     void shortenUrlServiceShouldReturnAliasIfProvided() {
+        when(urlConfig.getProtocol()).thenReturn(PROTOCOL);
         when(urlConfig.getHost()).thenReturn(HOST);
         when(urlConfig.getPort()).thenReturn(PORT);
         String url = "https://google.com";
@@ -63,7 +66,7 @@ class ShortenUrlServiceImplTest {
 
         UrlDto result = shortenUrlService.shortenUrl(request);
 
-        assertEquals(String.format("https://%s:%s/%s", HOST, PORT, alias), result.getShortUrl());
+        assertEquals(String.format("%s://%s:%s/%s", PROTOCOL, HOST, PORT, alias), result.getShortUrl());
     }
 
     @Test
@@ -95,6 +98,7 @@ class ShortenUrlServiceImplTest {
 
     @Test
     void getAllUrlsShouldReturnAListOfDtosWhichAreFormattedFromPersistenceLayer(){
+        when(urlConfig.getProtocol()).thenReturn(PROTOCOL);
         when(urlConfig.getHost()).thenReturn(HOST);
         when(urlConfig.getPort()).thenReturn(PORT);
         String destination1 = "https://google.com";
@@ -112,8 +116,8 @@ class ShortenUrlServiceImplTest {
         for(ShortenedUrlDto result : resultList){
             assertTrue(result.getAlias().equals(name1) || result.getAlias().equals(name2));
             assertTrue(result.getFullUrl().equals(destination1) || result.getFullUrl().equals(destination2));
-            String shortUrl1 = String.format(String.format("%s:%s/%s", HOST, PORT, alias1.getName()));
-            String shortUrl2 = String.format(String.format("%s:%s/%s", HOST, PORT, alias2.getName()));
+            String shortUrl1 = String.format(String.format("%s://%s:%s/%s", PROTOCOL, HOST, PORT, alias1.getName()));
+            String shortUrl2 = String.format(String.format("%s://%s:%s/%s", PROTOCOL, HOST, PORT, alias2.getName()));
             assertTrue(result.getShortUrl().equals(shortUrl1) || result.getShortUrl().equals(shortUrl2));
         }
     }

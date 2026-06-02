@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-06-01T21:19:14.774Z" hostname="archlinux" time="0.797">
+<testsuite name="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-06-02T16:52:47.669Z" hostname="archlinux" time="0.655">
   <properties/>
-  <testcase name="urlShortenerShouldReturnNewUrlWhenSuccessfulRequest()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.749"/>
-  <testcase name="urlShortenerShouldReturnBadRequestWhenNoUrlInBody()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.007"/>
-  <testcase name="redirectShouldThrowInternalServerErrorIfItCannotGetFullRedirectLink()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.008"/>
+  <testcase name="urlShortenerShouldReturnNewUrlWhenSuccessfulRequest()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.611"/>
+  <testcase name="urlShortenerShouldReturnBadRequestWhenNoUrlInBody()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.005"/>
+  <testcase name="redirectShouldThrowInternalServerErrorIfItCannotGetFullRedirectLink()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.007"/>
   <testcase name="urlFetchUrlsShouldCallServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.012"/>
-  <testcase name="redirectShouldFetchAliasDetailsFromServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.007"/>
-  <testcase name="deleteAliasEndpointShouldCallServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.007"/>
-  <system-out><![CDATA[]]></system-out>
+  <testcase name="redirectShouldFetchAliasDetailsFromServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.008"/>
+  <testcase name="deleteAliasEndpointShouldCallServiceLayer()" classname="com.tpximpact.url_shortener.controller.UrlShortenerControllerTest" time="0.005"/>
+  <system-out><![CDATA[shorten url request received
+shorten url request sucessfully returned
+shorten url request received
+shorten url request had an empty url
+redirect request recieved
+url list request received
+url list request successfully returned to sender
+redirect request recieved
+redirect request success
+]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
