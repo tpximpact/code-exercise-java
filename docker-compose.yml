@@ -10,6 +10,13 @@ services:
       JAVA_TOOL_OPTIONS: >
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       SPRING_PROFILES_ACTIVE: docker
+      URL_HOST: localhost
+      URL_PORT: 8080
+      URL_LENGTH: 12
+      CORS_ALLOWED_ORIGINGS: http://localhost:5173,http://localhost:3000
+      DATASOURCE_URL: jdbc:h2:mem:testdb
+      DATASOURCE_USERNAME: sa
+      DATASOURCE_PASSWORD: password
   frontend:
     build:
       context: ./FrontEnd
