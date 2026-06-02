@@ -20,6 +20,9 @@ public class RedirectUrlConfig {
     @Value("${redirect.url.length}")
     private int length;
 
+    @Value("${redirect.url.protocol:http}")
+    private String protocol;
+
     @Value("${redirect.url.host}")
     private String host;
 

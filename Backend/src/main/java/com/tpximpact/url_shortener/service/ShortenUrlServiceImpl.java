@@ -1,6 +1,7 @@
 package com.tpximpact.url_shortener.service;
 
 import com.tpximpact.url_shortener.config.RedirectUrlConfig;
+import com.tpximpact.url_shortener.controller.UrlShortenerController;
 import com.tpximpact.url_shortener.exception.AliasDoesNotExistException;
 import com.tpximpact.url_shortener.exception.DuplicateAliasException;
 import com.tpximpact.url_shortener.exception.UnacceptableUrlException;
@@ -12,7 +13,8 @@ import com.tpximpact.url_shortener.repository.UrlShortenerRepository;
 import com.tpximpact.url_shortener.util.RandomStringGenerator;
 import com.tpximpact.url_shortener.util.ValidatorHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
     private UrlShortenerRepository urlShortenerRepository;
 
     @Override
+    @CacheEvict(value="urls", allEntries=true)
     public UrlDto shortenUrl(ShortenUrlRequest req) {
         if(req.getCustomAlias() == null || req.getCustomAlias().isBlank()){
             int urlLength = urlConfig.getLength();
@@ -45,7 +48,7 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
             throw new UnacceptableUrlException("Unacceptable Url");
         }
 
-        String protocol = ValidatorHelper.getUrlProtocol(req.getFullUrl());
+        String protocol = urlConfig.getProtocol();
         String host = urlConfig.getHost();
         String port = urlConfig.getPort();
         String formattedUrl = String.format("%s://%s:%s/%s", protocol, host, port, req.getCustomAlias());
@@ -64,9 +67,12 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
     }
 
     @Override
+    @Cacheable("urls")
     public List<ShortenedUrlDto> getAllUrls() {
+        System.out.println("hitting database for get all url request");
         List<Alias> aliasList = urlShortenerRepository.findAll();
 
+        String protocol = urlConfig.getProtocol();
         String host = urlConfig.getHost();
         String port = urlConfig.getPort();
         List<ShortenedUrlDto> resultList = new ArrayList<>();
@@ -74,7 +80,7 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
             ShortenedUrlDto dto = ShortenedUrlDto.builder()
                     .alias(alias.getName())
                     .fullUrl(alias.getDestination())
-                    .shortUrl(String.format("%s:%s/%s", host, port, alias.getName()))
+                    .shortUrl(String.format("%s://%s:%s/%s", protocol, host, port, alias.getName()))
                     .build();
 
             resultList.add(dto);
@@ -95,6 +101,7 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
     }
 
     @Override
+    @CacheEvict(value="urls", allEntries=true)
     public void deleteAlias(String alias) {
         boolean isEmpty = urlShortenerRepository.findById(alias).isEmpty();
 
