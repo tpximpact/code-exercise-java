@@ -1,44 +1,183 @@
 # URL Shortener Coding Exercise
 
-## Task
+## Initial Thoughts
+Before starting the actual implementation, here are some initial thoughts and design decisions that will shape the final solution:
 
-Build a simple **URL shortener** in **your preferred language** (e.g. Java, C#, Python).
+* The tech-stack:
+  * React will be used for the Front-End
+  * Java Spring Boot will be used for the Back-End
+  * H2 will be used as an in memory database for simplicity sake. This can be configured through docker-compose env variables and could theoretically be swapped to a different database (Aurora/RDS) in a production environment.
+  * With the simplicity of the application (Create, Read, Delete operations), there isn't any real need to break the backend up into microservices. Following clean code principles allows for easy refactoring into seperate services (EG. Shortening Service & Redirect Service).
+* Test Driven Development will be closely followed as to ensure high amounts of meaningful code coverage on implementation. 
+* Certain performance decisions can be taken which are easy to implement in the Backend:
+  * Both the requested URL and the shortened url should be stored in the Database as HASH indexes, this will allow for O(1) lookups
+  * Use caching strategies to alleviate database congestion and improve through-put (in the event that this was to become popular and used frequently). 
+ * Collision management: 
+   *  If a user shortens a link that already exists, the same alias will be returned.
+   * If a user shortens a link with an alias that already exists, a 400 Bad Request will be returned. 
+ * Short Code generation: 
+   * Short code generation will be the result of a random string generator.
 
-It should:
+## Getting Started
 
-- Accept a full URL and return a shortened URL.
-- A shortened URL should have a randomly generated alias.
-- Allow a user to **customise the shortened URL** if they want to (e.g. user provides `my-custom-alias` instead of a random string).
-- Persist the shortened URLs across restarts.
-- Expose a **decoupled web frontend** built with a modern framework (e.g., React, Next.js, Vue.js, Angular, Flask with templates). This can be lightweight form/output just to demonstrate interaction with the API. Feel free to use UI frameworks like Bootstrap, Material-UI, Tailwind CSS, GOV.UK design system, etc. to speed up development.
-- Expose a **RESTful API** to perform create/read/delete operations on URLs.  
-  → Refer to the provided [`openapi.yaml`](./openapi.yaml) for API structure and expected behaviour.
-- Include the ability to **delete a shortened URL** via the API.
-- **Have tests**.
-- Be containerised (e.g. Docker).
-- Include instructions for running locally.
+### Prerequisites
+* Just Docker!
 
-## Rules
+### Set up
+This take home project has sacrificed some clean structure in order to have a very simple setup. To get started:
+1. Clone this branch: git clone 
+```
+https://github.com/RorryKelly/code-exercise-java.git
+```
+2. Change to the git directory: 
+```
+cd code-exercise-java
+```
+3. Checkout the correct branch: 
+```
+git checkout "rorry/delivery"
+```
+4. Compose Up: 
+```
+docker compose up --build
+```
+5. Connect to the front end
+```
+http://localhost:3000
+```
 
-- Fork the repository and work in your fork. Do not push directly to the main repository.
-- There is no time limit, we want to see something you are proud of. We would like to understand roughly how long you spent on it though.
-- **Commit often with meaningful messages.**
-- Write tests.
-- The API should validate inputs and handle errors gracefully.
-- The Frontend should show errors from the API appropriately.
-- Use the provided [`openapi.yaml`](./openapi.yaml) as the API contract.
-- Focus on clean, maintainable code.
-- AI tools (e.g., GitHub Copilot, ChatGPT) are allowed, but please **do not** copy-paste large chunks of code. Use them as assistants, not as a replacement for your own work. We will be asking.
+## Example Usage
 
-## Deliverables
+### Front End
+Connect to the front end using the default endpoint set up in the docker-compose file
+```
+http://localhost:3000
+```
+Once you connect to the front end you will be presented with the shortener form
+![Default Home Screen](Screenshots/default-home-screen.png)
 
-- Working software.
-- Decoupled web frontend (using a modern framework like React, Next.js, Vue.js, Angular, or Flask with templates).
-- RESTful API matching the OpenAPI spec.
-- Tests.
-- A git commit history that shows your thought process.
-- Dockerfile.
-- README with:
-  - How to build and run locally.
-  - Example usage (frontend and API).
-  - Any notes or assumptions.
+The form requires users to enter in a valid url, but users may enter a custom alias if they wish
+![Filled In Form](Screenshots/filled-in-form.png)
+
+Once the url has been entered, a success message will be presented - the success message with give the user
+![Submit Success](Screenshots/form-submit-success.png)
+
+If a user tries to enter a custom alias which is already in use, they will be presented with an error
+![Failed Submit](Screenshots/failed-form-submit.png)
+
+Users can view a full list of  URLs by selecting the `URL List` tab
+![Url List](Screenshots/url-list.png)
+
+## API Examples
+
+Base URL:
+
+```bash
+http://localhost:8080
+```
+
+---
+
+### Shorten a URL
+
+#### With a custom alias
+
+```bash
+curl -X POST http://localhost:8080/shorten \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullUrl": "https://example.com/very/long/url",
+    "customAlias": "my-custom-alias"
+  }'
+```
+
+**Response**
+
+```json
+{
+  "shortUrl": "http://localhost:8080/my-custom-alias"
+}
+```
+
+#### Without a custom alias
+
+```bash
+curl -X POST http://localhost:8080/shorten \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullUrl": "https://example.com/very/long/url"
+  }'
+```
+
+**Response**
+
+```json
+{
+  "shortUrl": "http://localhost:8080/aB3xYz"
+}
+```
+
+---
+
+### Redirect to Original URL
+
+Follow the redirect:
+
+```bash
+curl -L http://localhost:8080/my-custom-alias
+```
+
+**Response**
+
+```http
+HTTP/1.1 302 Found
+Location: https://example.com/very/long/url
+```
+
+---
+
+### List All Shortened URLs
+
+```bash
+curl http://localhost:8080/urls
+```
+
+**Response**
+
+```json
+[
+  {
+    "alias": "my-custom-alias",
+    "fullUrl": "https://example.com/very/long/url",
+    "shortUrl": "http://localhost:8080/my-custom-alias"
+  },
+  {
+    "alias": "aB3xYz",
+    "fullUrl": "https://google.com",
+    "shortUrl": "http://localhost:8080/aB3xYz"
+  }
+]
+```
+
+---
+
+### Delete a Shortened URL
+
+```bash
+curl -X DELETE http://localhost:8080/my-custom-alias
+```
+
+**Response**
+
+```http
+HTTP/1.1 204 No Content
+```
+
+## Improvements
+Given the time constraints with the take home project, some important things were not given the proper due-diligence these include:
+
+* Proper logging
+* Competent caching (redis distributed caching)
+* Work flow improvements (URL list automatically updating when new url is shortened)
+* More verbose error reporting from backend
+* Better handling of Url Env in docker compose and front end.
