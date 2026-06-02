@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.tpximpact.url_shortener.common.dto.util.RandomStringGeneratorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-06-02T16:52:47.636Z" hostname="archlinux" time="0.024">
-  <properties/>
-  <testcase name="StringsGeneratedShouldBeTheCorrectSize()" classname="com.tpximpact.url_shortener.common.dto.util.RandomStringGeneratorTest" time="0.014"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
