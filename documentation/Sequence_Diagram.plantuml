@@ -1,0 +1,28 @@
+@startuml
+actor User
+participant "React Frontend" as FE
+participant "API Controller" as Controller
+participant "URL Service" as Service
+database "PostgreSQL" as DB
+
+User -> FE : Enters URL & Optional Alias
+FE -> Controller : POST /api/v1/urls (JSON)
+activate Controller
+
+Controller -> Service : shortenUrl(url, alias)
+activate Service
+
+Service -> DB : Check if alias exists
+DB --> Service : Not found
+
+Service -> DB : Save Mapping (alias, original_url)
+DB --> Service : Saved (ID: 123)
+
+Service --> Controller : UrlMapping Object
+deactivate Service
+
+Controller --> FE : 201 Created (shortUrl)
+deactivate Controller
+
+FE -> User : Displays shortened link
+@enduml

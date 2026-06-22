@@ -1,0 +1,36 @@
+@startuml
+package "Web Layer" {
+  class UrlController {
+    +createShortUrl(dto: UrlRequest): ResponseEntity
+    +redirectToUrl(alias: String): ResponseEntity
+    +deleteUrl(alias: String): ResponseEntity
+  }
+}
+
+package "Business Layer" {
+  class UrlShortenerService {
+    -repository: UrlMappingRepository
+    +shortenUrl(url: String, alias: String): UrlMapping
+    +getOriginalUrl(alias: String): String
+    -generateRandomAlias(): String
+  }
+}
+
+package "Data Layer" {
+  interface UrlMappingRepository <<Repository>> {
+    +findByAlias(alias: String): Optional<UrlMapping>
+    +existsByAlias(alias: String): boolean
+  }
+
+  class UrlMapping <<Entity>> {
+    -id: Long
+    -alias: String
+    -originalUrl: String
+    -createdAt: LocalDateTime
+  }
+}
+
+UrlController --> UrlShortenerService
+UrlShortenerService --> UrlMappingRepository
+UrlMappingRepository ..> UrlMapping
+@enduml
