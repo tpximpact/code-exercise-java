@@ -1,0 +1,54 @@
+services:
+  # 1. Database/Cache Layer
+  redis:
+    image: redis:7-alpine
+    container_name: spring-redis-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  # 2. Backend Layer (Spring Boot)
+  backend:
+    build:
+      context: ./backend # Path to your Spring Boot project folder
+      dockerfile: Dockerfile
+    container_name: spring-boot-api
+    ports:
+      - "8585:8585"
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost}
+      - APP_BASE_URL=${APP_BASE_URL:-http://localhost:8585/api/v1/}
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  # 3. Frontend Layer (React)
+  frontend:
+    build:
+      context: ./frontend # Path to your React project folder
+      dockerfile: Dockerfile
+    container_name: react-ui
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_PROTOCOL=${VITE_API_PROTOCOL:-http}
+      - VITE_API_HOST=${VITE_API_HOST:-localhost}
+      - VITE_API_PORT=${VITE_API_PORT:-8585}
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-}
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
